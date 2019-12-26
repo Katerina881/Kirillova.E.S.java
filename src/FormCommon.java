@@ -2,7 +2,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 
 public class FormCommon implements IForm {
-	
+
 	@Override
 	public void FrmDoor(Graphics g, Color color, int posX, int posY) {
 		g.setColor(color);

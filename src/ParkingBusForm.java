@@ -1,21 +1,19 @@
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
-
-import javafx.scene.control.ChoiceDialog;
 
 public class ParkingBusForm {
 
@@ -24,12 +22,15 @@ public class ParkingBusForm {
 	ParkingBusPanel parkpanel;
 	private JTextField inputText;
 	IForm frm;
-	
+	JList list;
+	private JPanel panel1;
+	private JButton pakingBus;
+	private JButton parkingCommonBus;
+	BigParkingBus levelPark;
+	private final int countLevel = 5;
+	private HashSet<IBus> hashSetBus = new HashSet<IBus>();
 	public ParkingBus<IBus, IForm> parkingBus;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -43,80 +44,77 @@ public class ParkingBusForm {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public ParkingBusForm() {
 		initialize();
-		parkingBus = new ParkingBus<IBus, IForm>(15, parkpanel.getWidth(), parkpanel.getHeight());
-		parkpanel.setParkingBus(parkingBus);
+		levelPark = new BigParkingBus(countLevel, parkpanel.getWidth(), parkpanel.getHeight());
+		frame.getContentPane().setLayout(null);
+		frame.getContentPane().add(parkpanel);
+		frame.getContentPane().add(panel1);
+		frame.getContentPane().add(pakingBus);
+		frame.getContentPane().add(parkingCommonBus);
+		list = new JList();
+		DefaultListModel dlm = new DefaultListModel();
+		for (int i = 0; i < countLevel; i++)
+			dlm.addElement("Level " + (i+1));
+		list.setBounds(569, 13, 309, 154);
+		frame.getContentPane().add(list);
+		list.setModel(dlm);
+		list.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+		        if (evt.getClickCount() == 1) {
+		        	Draw();
+		        }
+			}
+		});
 	}
+	
 	private void Draw() {
+		parkpanel.setParkingBus(levelPark.getParkingBus(list.getSelectedIndex()));
 		parkpanel.validate();
 		parkpanel.repaint();
 	}
-	/**
-	 * Initialize the contents of the frame.
-	 */
+	
 	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100,  908, 646);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		parkpanel = new ParkingBusPanel();
-		JButton parkingCommonBus = new JButton("\u041F\u0440\u0438\u043F\u0430\u0440\u043A\u043E\u0432\u0430\u0442\u044C \u0430\u0432\u0442\u043E\u0431\u0443\u0441");
-		JButton pakingBus = new JButton("\u041F\u0440\u0438\u043F\u0430\u0440\u043A\u043E\u0432\u0430\u0442\u044C \u0434\u0432\u0443\u0445\u044D\u0442\u0430\u0436\u043D\u044B\u0439 \u0430\u0432\u0442\u043E\u0431\u0443\u0441\r\n");
+		parkpanel.setBounds(0, 0, 557, 599);
+		
+		parkingCommonBus = new JButton("\u041F\u0440\u0438\u043F\u0430\u0440\u043A\u043E\u0432\u0430\u0442\u044C \u0430\u0432\u0442\u043E\u0431\u0443\u0441");
+		parkingCommonBus.setBounds(564, 180, 314, 62);
 		parkingCommonBus.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JColorChooser colorChooser = new JColorChooser();
-				Color mainColor = JColorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
-				CommonBus bus = new CommonBus(15, 15, mainColor);
-				parkingBus.Add(bus, frm);
-				Draw();
+				if (list.getSelectedIndex() > -1) {
+					JColorChooser colorChooser = new JColorChooser();
+					Color mainColor = colorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
+					CommonBus bus = new CommonBus(15, 15, mainColor);
+					levelPark.getParkingBus(list.getSelectedIndex()).Add(bus, frm);
+					Draw();
+				}
 			}
 		});
-		
+		pakingBus = new JButton("\u041F\u0440\u0438\u043F\u0430\u0440\u043A\u043E\u0432\u0430\u0442\u044C \u0434\u0432\u0443\u0445\u044D\u0442\u0430\u0436\u043D\u044B\u0439 \u0430\u0432\u0442\u043E\u0431\u0443\u0441\r\n");
+		pakingBus.setBounds(564, 249, 314, 68);
 		pakingBus.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JColorChooser colorChooser = new JColorChooser();
-				Color mainColor = JColorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
-				Color dopColor = JColorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
-				Bus bus = new Bus(15,15, mainColor, dopColor, true, true);
-				parkingBus.Add(bus, frm);
-				Draw();
+				if (list.getSelectedIndex() > -1) {
+					JColorChooser colorChooser = new JColorChooser();
+					Color mainColor = colorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
+					Color dopColor = colorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
+					Bus bus = new Bus(15,15, mainColor, dopColor, true, true);
+					levelPark.getParkingBus(list.getSelectedIndex()).Add(bus, frm);
+		            Draw();
+				}
 			}
 		});
-		JPanel panel1 = new JPanel();
-		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(parkpanel, GroupLayout.PREFERRED_SIZE, 567, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel1, GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-						.addComponent(parkingCommonBus, GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
-						.addComponent(pakingBus, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE))
-					.addContainerGap())
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addContainerGap()
-							.addComponent(parkingCommonBus, GroupLayout.PREFERRED_SIZE, 62, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(pakingBus, GroupLayout.PREFERRED_SIZE, 68, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 187, Short.MAX_VALUE)
-							.addComponent(panel1, GroupLayout.PREFERRED_SIZE, 262, GroupLayout.PREFERRED_SIZE))
-						.addComponent(parkpanel, GroupLayout.PREFERRED_SIZE, 599, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap())
-		);
+		panel1 = new JPanel();
+		panel1.setBounds(564, 324, 314, 262);
 		panel1.setLayout(null);
 		
 		JTextPane textPane = new JTextPane();
@@ -140,25 +138,25 @@ public class ParkingBusForm {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (inputText.getText() != "")
-		        {
-		            IBus car = parkingBus.Remove(Integer.parseInt(inputText.getText()));
-		            if (car != null){
-		                car.SetPosition(panel.getWidth() / 2 - 30, panel.getHeight() / 2, panel.getWidth(),panel.getHeight());
-		                panel.position(car);
-		            }
-		            else {
-		            	panel.position(null);
-		            }
-		            panel.validate();
-		            panel.repaint();
-		            Draw();
-		        }
+				if (list.getSelectedIndex() > -1) {
+					if (inputText.getText() != "") {
+			            IBus bus = levelPark.getParkingBus(list.getSelectedIndex()).Remove(Integer.parseInt(inputText.getText()));
+			            if (bus != null){
+			                bus.SetPosition(panel.getWidth() / 2 - 30, panel.getHeight() / 2, panel.getWidth(),panel.getHeight());
+			                panel.position(bus);
+			                hashSetBus.add(bus);
+			            }
+			            else {
+			            	panel.position(null);
+			            }
+			            panel.validate();
+			            panel.repaint();
+			            Draw();
+			        }
+				}
 			}
 		});
 		getBus.setBounds(106, 68, 117, 25);
 		panel1.add(getBus);
-		frame.getContentPane().setLayout(groupLayout);
 	}
-
 }

@@ -1,8 +1,9 @@
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.HashMap;
 
 public class ParkingBus <T extends IBus, U extends IForm> {
-	private T[] places;
+	private HashMap<Integer, T> places;
 	int randform = 0;
     U frm;
     
@@ -11,36 +12,38 @@ public class ParkingBus <T extends IBus, U extends IForm> {
 
     private final int widthSizePlace = 210;
     private final int heightSizePlace = 80;
+    private int maxCount;
     
     public void randForm() {
   		randform = 0 + (int) (Math.random() * 3);
   	}
     
-    @SuppressWarnings("unchecked")
-	public ParkingBus(int size, int widthWindow, int heightWindow)
-    {
-        places = (T[])new IBus[size];
+	public ParkingBus(int size, int widthWindow, int heightWindow) {
+        places = new HashMap<Integer, T>();
         WidthWindow = widthWindow;
         HeightWindow = heightWindow;
-        for (int i = 0; i < places.length; i++) {
-            places[i] = null;
-        }
-        
+        maxCount = size;
     }
-    private boolean CheckFreePlace(int indexPlace)
-    {
-        return places[indexPlace] == null;
-    }     
+	
+    private boolean CheckFreePlace(int indexPlace){
+    	return places.get(indexPlace) == null;
+    } 
+    
+    public IBus getBus(int ind) {
+		return places.get(ind);
+    }
     
     @SuppressWarnings("unchecked")
 	public int Add(T bus, U frm)
     {
     	randForm();
-        for (int i = 0; i < places.length; i++)
-        {
-            if (CheckFreePlace(i))
-            {
+    	if (places.size() == maxCount) {
+			return -1;
+	    }
+        for (int i = 0; i < maxCount; i++) {
+            if (CheckFreePlace(i)) {
                 bus.SetPosition(5 + i / 5 * widthSizePlace + 5 , i % 5 * heightSizePlace + 15, WidthWindow, HeightWindow);
+                places.put(i, bus);
                 switch (randform) {
           		case 0:
           			frm = (U) new FormCommon();
@@ -53,7 +56,7 @@ public class ParkingBus <T extends IBus, U extends IForm> {
           			break;
           		}
                 ((CommonBus)bus).setFrm(frm);
-                places[i] = bus;
+                places.replace(i, bus);
                 return i;
             }
         }
@@ -61,21 +64,21 @@ public class ParkingBus <T extends IBus, U extends IForm> {
     }
     
     public boolean BolsheRavno(ParkingBus<IBus, IForm> term) {
-    	return places.length >= term.places.length;
+    	if (places.size() >= term.places.size())
+    		return true;
+    	return false;
     }
     
     public boolean MensheRavno(ParkingBus<IBus, IForm> term) {
-    	return places.length <= term.places.length;
+    	if (places.size() <= term.places.size())
+    		return true;
+    	return false;
     }
     
-    public T Remove(int index)
-    {
-        if (index < 0 || index > places.length)
-            return null;
-        if (!CheckFreePlace(index))
-        {
-            T bus = places[index];
-            places[index] = null;
+    public T Remove(int index){
+        if (!CheckFreePlace(index)){
+            T bus = places.get(index);
+            places.replace(index, null);
             return bus;
         }
         return null;
@@ -84,11 +87,11 @@ public class ParkingBus <T extends IBus, U extends IForm> {
     public void Draw(Graphics g)
     {
         DrawMarking(g);
-        for (int i = 0; i < places.length; i++)
+        for (int i = 0; i < places.size(); i++)
         {
             if (!CheckFreePlace(i))
             {
-                places[i].DrawBus(g);
+            	places.get(i).DrawBus(g);
             }
         }
     }
@@ -96,8 +99,8 @@ public class ParkingBus <T extends IBus, U extends IForm> {
     private void DrawMarking(Graphics g)
     {
         g.setColor(Color.BLACK);
-        g.drawRect(0, 0, (places.length / 5) * widthSizePlace - 65, 400);
-        for (int i = 0; i < places.length / 5; i++)
+        g.drawRect(0, 0, (maxCount / 5) * widthSizePlace - 65, 400);
+        for (int i = 0; i < maxCount / 5; i++)
         {
             for (int j = 0; j < 6; ++j)
             {

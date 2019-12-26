@@ -17,5 +17,4 @@ public class ParkingBusPanel extends JPanel{
 		if (parkingBus != null)
 			parkingBus.Draw(g);
 	}
-
 }
