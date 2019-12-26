@@ -24,6 +24,20 @@ public class ParkingBus <T extends IBus, U extends IForm> {
         maxCount = size;
     }
 	
+	public T getPlace(int ind) {
+		if (places.containsKey(ind)) {
+            return places.get(ind);
+        }
+        return null;
+	}
+	
+	public void setPlace(int ind, T value) {
+		if (CheckFreePlace(ind)) {
+            places.put(ind, value);
+            places.get(ind).SetPosition(5 + ind / 5 * widthSizePlace + 5 , ind % 5 * heightSizePlace + 15, WidthWindow, HeightWindow);
+        }
+	}
+	
     private boolean CheckFreePlace(int indexPlace){
     	return places.get(indexPlace) == null;
     } 

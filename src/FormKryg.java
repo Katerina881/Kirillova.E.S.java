@@ -31,4 +31,8 @@ public class FormKryg implements IForm {
 			g.fillOval(posX + 57,posY + 4, 7, 7);
 		}
 	}
+    @Override
+	public String toString() {
+		return this.getClass().getName();
+	}
 }

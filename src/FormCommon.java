@@ -30,4 +30,8 @@ public class FormCommon implements IForm {
 			g.fillRect(posX + 57, posY + 2, 7, 13);
 		}
 	}
+	@Override
+	public String toString() {
+		return this.getClass().getName();
+	}
 }

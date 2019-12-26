@@ -44,4 +44,8 @@ public class FormDvoinaya implements IForm {
 		    g.fillRect(posX + 62, posY + 2, 1, 20);
 		}
 	}
+    @Override
+	public String toString() {
+		return this.getClass().getName();
+	}
 }
