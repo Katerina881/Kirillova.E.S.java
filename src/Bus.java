@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.awt.Graphics;
 
+
 public class Bus extends CommonBus {
 	 
      private Color DopColor;
@@ -44,15 +45,17 @@ public class Bus extends CommonBus {
          g.fillRect(_startPosX + 35, _startPosY + 3, 10, 10);
          g.fillRect(_startPosX + 73, _startPosY + 3, 12, 10);
 
-         if (SideImg) {
+         if (SideImg)
+         {
         	 g.setColor(DopColor);
              g.fillRect(_startPosX + 13, _startPosY + 14, 40, 8);
          }
 
-         if (!Roof)  {
+         if (!Roof)
+         {
              g.setColor(Color.LIGHT_GRAY);
              g.fillRect(_startPosX, _startPosY, 85, 3);
          }
-         frm.VerxDoor(Enum.CountDoor, g, Color.black);
+         frm.VerxDoor(Enum.CountDoor, g, Color.black, _startPosX, _startPosY);
      }
 }

@@ -11,7 +11,8 @@ public abstract class Vehicle implements IBus {
      public float Weight; 
      public Color MainColor; 
      
-     public void SetPosition(int x, int y, int width, int height){
+     public void SetPosition(int x, int y, int width, int height)
+     {
          _startPosX = x;
          _startPosY = y;
          _pictureWidth = width;

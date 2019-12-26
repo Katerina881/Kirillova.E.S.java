@@ -8,7 +8,10 @@ public class BusPanel extends JPanel {
     public void position(IBus bus) {
     	this.bus = bus;
     } 
+    @Override
     public void paint(Graphics g) {
-        bus.DrawBus(g);
+    	super.paint(g);
+    	if (bus != null)
+    		bus.DrawBus(g);
     }
 }
