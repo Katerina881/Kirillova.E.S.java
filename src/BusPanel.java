@@ -11,7 +11,8 @@ public class BusPanel extends JPanel {
     @Override
     public void paint(Graphics g) {
     	super.paint(g);
-    	if (bus != null)
+    	if (bus != null) {
     		bus.DrawBus(g);
+    	}
     }
 }

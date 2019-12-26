@@ -6,17 +6,13 @@ public class CommonBus extends Vehicle {
 
 	protected final int carWidth = 100;
     protected final int carHeight = 60;
-    int randform = 0;
-    IForm frm;
     
-    public CommonBus(int maxSpeed, float weight, Color mainColor) {
-    	Enum.rand();
+    public CommonBus(int maxSpeed, float weight, Color mainColor)
+    {
+    	
         MaxSpeed = maxSpeed;
         Weight = weight;
         MainColor = mainColor;
-    }
-    public void setFrm(IForm frm) {
-    	this.frm = frm;
     }
 	@Override
 	public void DrawBus(Graphics g) {
@@ -34,7 +30,8 @@ public class CommonBus extends Vehicle {
         g.fillOval(_startPosX + 13, _startPosY + 40, 17, 17);
         g.fillOval(_startPosX + 55, _startPosY + 40, 17, 17);
         
-        frm.FrmDoor(g, Color.BLACK, _startPosX, _startPosY);
+        if (frm != null)
+        	frm.FrmDoor(g, Color.BLACK, _startPosX, _startPosY);
 	}
 
 	@Override

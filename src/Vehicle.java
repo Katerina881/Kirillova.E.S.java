@@ -10,9 +10,9 @@ public abstract class Vehicle implements IBus {
      public int MaxSpeed; 
      public float Weight; 
      public Color MainColor; 
+     IForm frm;
      
-     public void SetPosition(int x, int y, int width, int height)
-     {
+     public void SetPosition(int x, int y, int width, int height) {
          _startPosX = x;
          _startPosY = y;
          _pictureWidth = width;
@@ -20,5 +20,12 @@ public abstract class Vehicle implements IBus {
      }
      public abstract void DrawBus(Graphics g);
      public abstract void MoveTransport(Bus.Direction direction);
-
+     
+     public void SetMainColor(Color color) {
+         MainColor = color;
+     }
+     
+     public void SetFrm(IForm form){
+         frm = form;
+     }
 }

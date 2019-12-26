@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 public class BigParkingBus {
+	
 	ArrayList<ParkingBus<IBus, IForm>> parkLevels;
 	
 	private final int countPlaces = 15;

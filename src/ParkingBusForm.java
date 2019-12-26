@@ -1,5 +1,3 @@
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,9 +6,9 @@ import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JColorChooser;
 import javax.swing.JFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -24,8 +22,7 @@ public class ParkingBusForm {
 	IForm frm;
 	JList list;
 	private JPanel panel1;
-	private JButton pakingBus;
-	private JButton parkingCommonBus;
+	private JButton createBus;
 	BigParkingBus levelPark;
 	private final int countLevel = 5;
 	private HashSet<IBus> hashSetBus = new HashSet<IBus>();
@@ -50,8 +47,7 @@ public class ParkingBusForm {
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(parkpanel);
 		frame.getContentPane().add(panel1);
-		frame.getContentPane().add(pakingBus);
-		frame.getContentPane().add(parkingCommonBus);
+		frame.getContentPane().add(createBus);
 		list = new JList();
 		DefaultListModel dlm = new DefaultListModel();
 		for (int i = 0; i < countLevel; i++)
@@ -82,35 +78,25 @@ public class ParkingBusForm {
 		parkpanel = new ParkingBusPanel();
 		parkpanel.setBounds(0, 0, 557, 599);
 		
-		parkingCommonBus = new JButton("\u041F\u0440\u0438\u043F\u0430\u0440\u043A\u043E\u0432\u0430\u0442\u044C \u0430\u0432\u0442\u043E\u0431\u0443\u0441");
-		parkingCommonBus.setBounds(564, 180, 314, 62);
-		parkingCommonBus.addActionListener(new ActionListener() {
-			
+		createBus = new JButton("\u0417\u0430\u043A\u0430\u0437\u0430\u0442\u044C");
+		createBus.setBounds(564, 249, 314, 62);
+		
+		createBus.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (list.getSelectedIndex() > -1) {
-					JColorChooser colorChooser = new JColorChooser();
-					Color mainColor = colorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
-					CommonBus bus = new CommonBus(15, 15, mainColor);
-					levelPark.getParkingBus(list.getSelectedIndex()).Add(bus, frm);
-					Draw();
-				}
-			}
-		});
-		pakingBus = new JButton("\u041F\u0440\u0438\u043F\u0430\u0440\u043A\u043E\u0432\u0430\u0442\u044C \u0434\u0432\u0443\u0445\u044D\u0442\u0430\u0436\u043D\u044B\u0439 \u0430\u0432\u0442\u043E\u0431\u0443\u0441\r\n");
-		pakingBus.setBounds(564, 249, 314, 68);
-		pakingBus.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				if (list.getSelectedIndex() > -1) {
-					JColorChooser colorChooser = new JColorChooser();
-					Color mainColor = colorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
-					Color dopColor = colorChooser.showDialog(new Component() {}, "Color", Color.BLACK);
-					Bus bus = new Bus(15,15, mainColor, dopColor, true, true);
-					levelPark.getParkingBus(list.getSelectedIndex()).Add(bus, frm);
-		            Draw();
-				}
+				ConfigBusForm config = new ConfigBusForm(new CarDelegate() {
+					@Override
+					public void Invoke(IBus bus) {
+						if (bus != null && list.getSelectedIndex() > -1) {
+							int place = levelPark.getParkingBus(list.getSelectedIndex()).Add(bus);
+							if (place > -1)
+								Draw();
+							else
+								JOptionPane.showMessageDialog(null,"regrh");
+						}
+					}
+				});
+				config.getFrame().setVisible(true);
 			}
 		});
 		panel1 = new JPanel();

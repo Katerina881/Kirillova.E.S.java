@@ -29,6 +29,10 @@ public class Bus extends CommonBus {
     	 SideImg = sideImg;
      }
      
+     public void SetDopColor(Color color){    
+    	 DopColor = color; 
+     }
+     
      @Override
      public void DrawBus(Graphics g) {
     	 
@@ -56,6 +60,7 @@ public class Bus extends CommonBus {
              g.setColor(Color.LIGHT_GRAY);
              g.fillRect(_startPosX, _startPosY, 85, 3);
          }
-         frm.VerxDoor(Enum.CountDoor, g, Color.black, _startPosX, _startPosY);
+         if (frm != null)
+        	 frm.VerxDoor(Enum.CountDoor, g, Color.black, _startPosX, _startPosY);
      }
 }
