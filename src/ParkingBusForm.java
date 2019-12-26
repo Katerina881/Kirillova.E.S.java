@@ -19,6 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import java.util.logging.FileHandler;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class ParkingBusForm {
 
@@ -40,6 +43,9 @@ public class ParkingBusForm {
 	private JMenuItem btnLoad;
 	private JMenuItem btnSaveLvl;
 	private JMenuItem btnLoadLvl;
+	
+	private Logger loggerInfo;
+	private Logger loggerError;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -56,6 +62,23 @@ public class ParkingBusForm {
 
 	public ParkingBusForm() {
 		initialize();
+		loggerInfo = Logger.getLogger("Info");
+		loggerError = Logger.getLogger("Errors");
+		try {
+			FileHandler fhInfo = new FileHandler("infoLogs.txt");
+			FileHandler fhError = new FileHandler("errorLogs.txt");
+			loggerInfo.addHandler(fhInfo);
+			loggerError.addHandler(fhError);
+			loggerInfo.setUseParentHandlers(false);
+			loggerError.setUseParentHandlers(false);
+			SimpleFormatter simpleFormatter = new SimpleFormatter();
+			fhInfo.setFormatter(simpleFormatter);
+			fhError.setFormatter(simpleFormatter);
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		levelPark = new BigParkingBus(countLevel, parkpanel.getWidth(), parkpanel.getHeight());
 		frame.getContentPane().setLayout(null);
 		frame.getContentPane().add(parkpanel);
@@ -136,68 +159,71 @@ public class ParkingBusForm {
 		});
 	}
 	
-	private void SaveToolStripMenuItem_Click() throws HeadlessException, IOException
-    {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.SAVE);
-        fileDialog.setVisible(true);
-        if (fileDialog.getFile() != null) {
-            if (levelPark.SaveData(fileDialog.getDirectory() + fileDialog.getFile())) {
-				JOptionPane.showMessageDialog(null,"Сохранение прошло успешно");
-            }
-            else {
-				JOptionPane.showMessageDialog(null,"Не сохранилось");
-            }
+	private void SaveToolStripMenuItem_Click() throws HeadlessException, IOException {
+		try {
+	        FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.SAVE);
+	        fileDialog.setVisible(true);
+	        levelPark.SaveData(fileDialog.getDirectory() + fileDialog.getFile());
+	        loggerInfo.info("сохранение в файле " + fileDialog.getName());
+			JOptionPane.showMessageDialog(null,"Сохранение прошло успешно");
         }
+        catch (Exception e) {
+			loggerError.warning(e.getMessage());
+			JOptionPane.showMessageDialog(null,"не сохранилось");
+		}
     }
 	
 	private void SaveLvl() throws HeadlessException, IOException {
-		FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.SAVE);
-		fileDialog.setVisible(true);
-		if (fileDialog.getFile() != null) {
-		    if (levelPark.SaveLvl(fileDialog.getDirectory() + fileDialog.getFile(), list.getSelectedIndex())){
-				JOptionPane.showMessageDialog(null,"Сохранение прошло успешно");
-		    }
-		    else {
-				JOptionPane.showMessageDialog(null,"Не сохранилось");
-		    }
+		try {
+			FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.SAVE);
+			fileDialog.setVisible(true);
+		    levelPark.SaveLvl(fileDialog.getDirectory() + fileDialog.getFile(), list.getSelectedIndex());
+		    loggerInfo.info("сохранение в файле " + fileDialog.getName());
+		    JOptionPane.showMessageDialog(null,"Сохранение прошло успешно");
+		}
+		catch (Exception e) {
+			loggerError.warning(e.getMessage());
+			JOptionPane.showMessageDialog(null,"Не сохранилось");
 		}
 	}
 	
 	private void LoadLvl() throws HeadlessException, IOException {
-		FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.LOAD);
-        fileDialog.setVisible(true);
-        if (fileDialog.getFile() != null) {
-            try {
-				if (levelPark.LoadLvl(fileDialog.getDirectory() + fileDialog.getFile(), list.getSelectedIndex())) {
-					JOptionPane.showMessageDialog(null,"Загрузили");
-				}
-				else {
-					JOptionPane.showMessageDialog(null,"Не загрузили");
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+		 try {
+	    		FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.LOAD);
+	            fileDialog.setVisible(true);
+	            levelPark.LoadLvl(fileDialog.getDirectory() + fileDialog.getFile(), list.getSelectedIndex());
+				JOptionPane.showMessageDialog(null,"Загрузили уровень");
+				loggerInfo.info("Загрузка уровня из файла" + fileDialog.getName());
+	            Draw();
+	        }
+	        catch (ParkingOccupiedPlaceException ex) {
+	        	loggerError.warning(ex.getMessage().toString());
+				JOptionPane.showMessageDialog(null,"Занятое место");
+	        }
+	        catch (Exception ex) {
+	        	loggerError.warning(ex.getMessage());
+				JOptionPane.showMessageDialog(null,"Неизвестная ошибка");
 			}
-            Draw();
-        }
 	}
 	
 	private void LoadToolStripMenuItem_Click() throws NumberFormatException, HeadlessException, IOException
     {
-        FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.LOAD);
-        fileDialog.setVisible(true);
-        if (fileDialog.getFile() != null) {
-            try {
-				if (levelPark.LoadData(fileDialog.getDirectory() + fileDialog.getFile())) {
-					JOptionPane.showMessageDialog(null,"Загрузили");
-				}
-				else {
-					JOptionPane.showMessageDialog(null,"Не загрузили");
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+    		FileDialog fileDialog = new FileDialog(new Frame(), "Save", FileDialog.LOAD);
+            fileDialog.setVisible(true);
+            levelPark.LoadLvl(fileDialog.getDirectory() + fileDialog.getFile(), list.getSelectedIndex());
+			JOptionPane.showMessageDialog(null,"Загрузили");
+			loggerInfo.info("Загрузка из файла" + fileDialog.getName());
             Draw();
         }
+        catch (ParkingOccupiedPlaceException ex) {
+        	loggerError.warning(ex.getMessage().toString());
+			JOptionPane.showMessageDialog(null,"Занятое место");
+        }
+        catch (Exception ex) {
+        	loggerError.warning(ex.getMessage());
+			JOptionPane.showMessageDialog(null,"Неизвестная ошибка");
+		}
     }
 	
 	private void Draw() {
@@ -224,11 +250,21 @@ public class ParkingBusForm {
 					@Override
 					public void Invoke(IBus bus) {
 						if (bus != null && list.getSelectedIndex() > -1) {
-							int place = levelPark.getParkingBus(list.getSelectedIndex()).Add(bus);
-							if (place > -1)
+							try {
+								int place = levelPark.getParkingBus(list.getSelectedIndex()).Add(bus);
+								loggerInfo.info("Добавление автобуса " + bus.toString() + " на место " + place);
 								Draw();
-							else
-								JOptionPane.showMessageDialog(null,"Парковка заполнена");
+							}
+							catch (ParkingOverflowException ex)
+			                 {
+			                     loggerError.warning(ex.getMessage());
+			                     JOptionPane.showMessageDialog(null,"Переполнение");
+			                 }
+			                 catch (Exception ex)
+			                 {
+			                     loggerError.warning(ex.getMessage());
+			                     JOptionPane.showMessageDialog(null,"Неизвестная ошибка");
+			                 }
 						}
 					}
 				});
@@ -262,18 +298,28 @@ public class ParkingBusForm {
 			public void actionPerformed(ActionEvent e) {
 				if (list.getSelectedIndex() > -1) {
 					if (inputText.getText() != "") {
-			            IBus bus = levelPark.getParkingBus(list.getSelectedIndex()).Remove(Integer.parseInt(inputText.getText()));
-			            if (bus != null){
-			                bus.SetPosition(panel.getWidth() / 2 - 30, panel.getHeight() / 2, panel.getWidth(),panel.getHeight());
-			                panel.position(bus);
-			                hashSetBus.add(bus);
-			            }
-			            else {
-			            	panel.position(null);
-			            }
-			            panel.validate();
-			            panel.repaint();
-			            Draw();
+						try {
+				            IBus bus = levelPark.getParkingBus(list.getSelectedIndex()).Remove(Integer.parseInt(inputText.getText()));
+				            bus.SetPosition(panel.getWidth() / 2 - 30, panel.getHeight() / 2, panel.getWidth(),panel.getHeight());
+				            panel.position(bus);
+				            hashSetBus.add(bus);
+				            panel.validate();
+				            panel.repaint();
+				            Draw();
+						}
+				        catch (ParkingNotFoundException ex) {
+				            panel.position(null);
+				            panel.validate();
+						    panel.repaint();
+						    Draw();
+				        	JOptionPane.showMessageDialog(null,"не забрали");
+				            loggerError.warning(ex.getMessage().toString());
+				        }
+						catch (Exception ex)
+		                {
+		        			JOptionPane.showMessageDialog(null,"Неизвестная ошибка");
+		                	loggerError.warning(ex.getMessage().toString());    
+						}
 			        }
 				}
 			}

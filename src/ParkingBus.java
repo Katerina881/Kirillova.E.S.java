@@ -24,18 +24,19 @@ public class ParkingBus <T extends IBus, U extends IForm> {
         maxCount = size;
     }
 	
-	public T getPlace(int ind) {
+	public T getPlace(int ind) throws ParkingNotFoundException {
 		if (places.containsKey(ind)) {
             return places.get(ind);
         }
         return null;
 	}
 	
-	public void setPlace(int ind, T value) {
+	public void setPlace(int ind, T value) throws ParkingOccupiedPlaceException {
 		if (CheckFreePlace(ind)) {
             places.put(ind, value);
             places.get(ind).SetPosition(5 + ind / 5 * widthSizePlace + 5 , ind % 5 * heightSizePlace + 15, WidthWindow, HeightWindow);
         }
+		else throw new ParkingOccupiedPlaceException(ind);
 	}
 	
     private boolean CheckFreePlace(int indexPlace){
@@ -45,10 +46,9 @@ public class ParkingBus <T extends IBus, U extends IForm> {
     public IBus getBus(int ind) {
 		return places.get(ind);
     }
-    public int Add(T bus)
-    {
+    public int Add(T bus) throws ParkingOverflowException {
 		if (places.size() == maxCount) {
-			return -1;
+			throw new ParkingOverflowException();
 	    }
         for (int i = 0; i < maxCount; i++) {
             if (CheckFreePlace(i)) {
@@ -58,22 +58,21 @@ public class ParkingBus <T extends IBus, U extends IForm> {
                 return i;
             }
         }
-        return -1;
+        throw new ParkingOverflowException();
     }
-	public int Add(T bus, U frm)
-    {
+	public int Add(T bus, U frm) {
     	if (places.size() == maxCount) {
-			return -1;
+    		throw new ParkingOverflowException();
 	    }
         for (int i = 0; i < maxCount; i++) {
             if (CheckFreePlace(i)) {
+            	places.put(i, bus);
                 bus.SetPosition(5 + i / 5 * widthSizePlace + 5 , i % 5 * heightSizePlace + 15, WidthWindow, HeightWindow);
-                places.put(i, bus);
                 places.replace(i, bus);
                 return i;
             }
         }
-        return -1;
+        throw new ParkingOverflowException();
     }
     
     public boolean BolsheRavno(ParkingBus<IBus, IForm> term) {
@@ -88,13 +87,15 @@ public class ParkingBus <T extends IBus, U extends IForm> {
     	return false;
     }
     
-    public T Remove(int index){
+    public T Remove(int index)throws ParkingNotFoundException {
+    	if (index < 0 || index > maxCount)
+            throw new ParkingNotFoundException(index);
         if (!CheckFreePlace(index)){
             T bus = places.get(index);
             places.replace(index, null);
             return bus;
         }
-        return null;
+        throw new ParkingNotFoundException(index);
     }
     
     public void Draw(Graphics g) {

@@ -1,0 +1,6 @@
+дек 26, 2019 12:16:29 PM ParkingBusForm$7$1 Invoke
+WARNING: На парковке нет свободных мест
+дек 26, 2019 12:16:36 PM ParkingBusForm$8 actionPerformed
+WARNING: Не найден автомобиль по месту  16
+дек 26, 2019 12:16:39 PM ParkingBusForm$8 actionPerformed
+WARNING: Не найден автомобиль по месту  15
