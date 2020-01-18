@@ -21,9 +21,6 @@ public class Bus {
      public int getY() {
     	 return _startPosY;
      }
-     public enum Direction {
-    	 Up, Down, Left, Right
-     }
      
      public Bus(int maxSpeed, float weight, Color mainColor, Color dopColor,
 boolean roof, boolean sideImg){
@@ -42,7 +39,7 @@ boolean roof, boolean sideImg){
          _pictureHeight = height;
      }
      
-     public void MoveTransport(Direction direction){
+     public void MoveTransport(Dir.Direction direction){
          float step = MaxSpeed * 180 / Weight;
          switch (direction) {
              case Right:
@@ -104,7 +101,5 @@ boolean roof, boolean sideImg){
              g.setColor(Color.LIGHT_GRAY);
              g.fillRect(_startPosX, _startPosY, 85, 3);
          }
-         
      }
-
 }

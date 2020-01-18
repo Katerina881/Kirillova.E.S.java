@@ -16,7 +16,6 @@ public class BusForm {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
 					BusForm window = new BusForm();
 					window.frmBus.setVisible(true);
 				} catch (Exception e) {
@@ -58,7 +57,7 @@ frmBus.getWidth() -100 , frmBus.getHeight()-100);
 		JButton buttonUp = new JButton("");
 		buttonUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bus.MoveTransport(Bus.Direction.Up);
+				bus.MoveTransport(Dir.Direction.Up);
 				frmBus.repaint();
 			}
 		});
@@ -70,7 +69,7 @@ frmBus.getWidth() -100 , frmBus.getHeight()-100);
 		JButton buttonRight = new JButton("");
 		buttonRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bus.MoveTransport(Bus.Direction.Right);
+				bus.MoveTransport(Dir.Direction.Right);
 				frmBus.repaint();
 			}
 		});
@@ -81,7 +80,7 @@ frmBus.getWidth() -100 , frmBus.getHeight()-100);
 		JButton buttonDown = new JButton("");
 		buttonDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bus.MoveTransport(Bus.Direction.Down);
+				bus.MoveTransport(Dir.Direction.Down);
 				frmBus.repaint();
 			}
 		});
@@ -92,7 +91,7 @@ frmBus.getWidth() -100 , frmBus.getHeight()-100);
 		JButton buttonLeft = new JButton("");
 		buttonLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				bus.MoveTransport(Bus.Direction.Left);
+				bus.MoveTransport(Dir.Direction.Left);
 				frmBus.repaint();
 			}
 		});

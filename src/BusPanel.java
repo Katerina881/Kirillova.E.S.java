@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import javax.swing.JPanel;
 import java.awt.Graphics;
@@ -8,10 +7,11 @@ public class BusPanel extends JPanel {
 	Bus bus;
 	Enum dor = new Enum();
 	static int flag = 0;
+	
     public void position(Bus bus) {
     	this.bus = bus;
-    	
     }
+    
     public void paint(Graphics g) {
     	
         bus.DrawET(g);
@@ -32,5 +32,4 @@ public class BusPanel extends JPanel {
 	        g.fillRect( bus.getX() + 57, bus.getY() + 2, 7, 13);
 		}
     }
-    
 }
